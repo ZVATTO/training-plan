@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Reshad & Nida — Training Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--s1:#111;--s2:#161616;--border:#1e1e1e;--b2:#141414;
+  --text:#e0e0e0;--muted:#3a3a3a;--dim:#555;
+  --acc:#00D4AA;
+  --display:'Bebas Neue',Impact,sans-serif;
+  --body:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px}
+
+/* HEADER */
+.hdr{padding:52px 18px 14px;border-bottom:1px solid var(--border)}
+.hdr-eye{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px}
+.hdr-title{font-family:var(--display);font-size:clamp(28px,8vw,52px);line-height:1;letter-spacing:.04em;color:#fff}
+.hdr-title .amp{color:#333}
+.hdr-sub{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:5px;letter-spacing:.06em}
+
+/* PERSON SWITCHER */
+.person-switch{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--s1)}
+.person-btn{flex:1;background:none;border:none;padding:13px 18px;cursor:pointer;font-family:var(--display);font-size:22px;letter-spacing:.08em;color:#333;border-bottom:3px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.person-btn.active{color:#fff;border-bottom-color:var(--acc)}
+
+/* DAY TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:11px 13px;cursor:pointer;white-space:nowrap;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.tab.active{color:var(--day-color,var(--acc));border-bottom-color:var(--day-color,var(--acc))}
+
+/* PANELS */
+.content{padding:18px 18px 60px;max-width:680px}
+
+/* OVERVIEW */
+.overview-banner{border-radius:10px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.ov-name{font-family:var(--display);font-size:44px;letter-spacing:.04em;line-height:1}
+.ov-focus{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+
+.info-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:15px;margin-bottom:12px}
+.info-title{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.itbar{display:inline-block;width:2px;height:12px;border-radius:2px;flex-shrink:0}
+.info-card ul{padding-left:16px}
+.info-card li{font-size:13px;color:#bbb;line-height:1.9}
+.info-card li strong{color:#ddd}
+.info-card p{font-size:13px;color:#bbb;line-height:1.7}
+
+/* SCHEDULE OVERVIEW */
+.sched-row{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--b2);gap:12px}
+.sched-row:last-child{border-bottom:none}
+.sched-day{font-family:var(--mono);font-size:10px;color:var(--dim);min-width:36px;letter-spacing:.08em}
+.sched-name{font-size:13px;color:#d0d0d0;flex:1}
+.sched-time{font-family:var(--mono);font-size:10px}
+
+/* DAY HEADER */
+.day-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.day-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.day-title-block{flex:1}
+.day-name-label{font-family:var(--display);font-size:30px;color:#fff;letter-spacing:.04em;line-height:1}
+.day-focus-label{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px;letter-spacing:.06em}
+.day-dur{font-family:var(--display);font-size:20px;letter-spacing:.04em}
+
+/* REST TAG */
+.rest-tag{display:inline-flex;align-items:center;gap:5px;border-radius:4px;padding:3px 9px;margin-bottom:12px}
+.rest-tag span{font-family:var(--mono);font-size:10px}
+
+/* SECTION LABEL */
+.sec-lbl{display:flex;align-items:center;gap:6px;margin-bottom:8px;margin-top:12px}
+.slbar{width:2px;height:13px;border-radius:2px;flex-shrink:0}
+.sltext{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+
+/* EXERCISE TABLE */
+.ex-tbl{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:2px}
+.ex-row{display:flex;align-items:center;padding:10px 13px;gap:10px;border-bottom:1px solid var(--b2);transition:background .15s}
+.ex-row:last-child{border-bottom:none}
+.ex-n{font-family:var(--mono);font-size:9px;font-weight:700;min-width:18px;opacity:.4}
+.ex-info{flex:1;min-width:0}
+.ex-name{font-size:13px;font-weight:500;color:#d8d8d8}
+.ex-note{font-size:10px;color:#383838;font-style:italic;margin-top:2px}
+.ex-sets{font-family:var(--mono);font-size:10px;font-weight:700;white-space:nowrap;padding:2px 8px;border-radius:3px}
+
+/* CORE / ITEM LIST */
+.item-list{background:var(--s2);border-radius:8px;overflow:hidden}
+.item-row{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-bottom:1px solid var(--b2);gap:8px}
+.item-row:last-child{border-bottom:none}
+.item-name{font-size:12px;color:#c0c0c0;flex:1}
+.item-note{font-size:10px;color:#3a3a3a;font-style:italic;margin-top:1px}
+.item-reps{font-family:var(--mono);font-size:10px;white-space:nowrap}
+
+/* CARDIO CARD */
+.cardio-card{border-radius:9px;padding:13px 15px;margin-top:12px}
+.cardio-label{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.clbar{display:inline-block;width:2px;height:11px;border-radius:2px;flex-shrink:0}
+.cardio-stats{display:flex;gap:16px;margin-bottom:7px;flex-wrap:wrap}
+.cstat-lbl{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1px}
+.cstat-val{font-family:var(--display);font-size:18px;letter-spacing:.04em}
+.cardio-note{font-size:11px;color:#484848;line-height:1.7}
+
+/* HIIT BLOCK */
+.hiit-block{border-radius:9px;padding:14px 15px}
+.hiit-title{font-family:var(--display);font-size:22px;letter-spacing:.04em;margin-bottom:6px}
+.hiit-note{font-size:12px;color:#666;line-height:1.7;white-space:pre-line}
+
+/* OFF DAY */
+.off-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:28px 20px;text-align:center;margin-top:8px}
+.off-title{font-family:var(--display);font-size:40px;letter-spacing:.04em;color:var(--acc);margin-bottom:8px}
+.off-text{font-size:13px;color:#555;line-height:1.7}
+
+@media(max-width:360px){.person-btn{font-size:18px;padding:12px 10px}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eye">Movati Athletic · 5-Day Split · Mon–Fri · Machine & Cable Focus</div>
+  <div class="hdr-title">RESHAD <span class="amp">&</span> NIDA</div>
+  <div class="hdr-sub">Strength · Recomposition · Sat–Sun Off</div>
+</div>
+
+<div class="person-switch">
+  <button class="person-btn active" id="pbtn-reshad" onclick="setPerson('reshad')">RESHAD</button>
+  <button class="person-btn" id="pbtn-nida" onclick="setPerson('nida')">NIDA</button>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="content" id="content"></div>
+
+<script>
+const DAYS_ORDER = ['overview','mon','tue','wed','thu','fri'];
+const DAY_LABELS = {overview:'Overview',mon:'Mon',tue:'Tue',wed:'Wed',thu:'Thu',fri:'Fri'};
+
+const P = {
+  reshad: {
+    name: 'Reshad',
+    color: '#00D4AA',
+    focus: 'Strength + Recomposition',
+    schedNote: 'Machine & cable focus — minimal bodyweight or band work.',
+    sched: [
+      {day:'MON',label:'Lower Body — Strength',time:'70 min',color:'#E8FF47'},
+      {day:'TUE',label:'Upper Body — Push',time:'65 min',color:'#FF6B35'},
+      {day:'WED',label:'Cardio + Core',time:'55 min',color:'#FF3D6B'},
+      {day:'THU',label:'Lower Body — Posterior Chain',time:'70 min',color:'#C084FC'},
+      {day:'FRI',label:'Upper Body — Pull',time:'65 min',color:'#FFB800'},
+      {day:'SAT',label:'Off',time:'—',color:'#333'},
+      {day:'SUN',label:'Off',time:'—',color:'#333'},
+    ],
+    overview_notes: [
+      'Machine and cable focused — leg press, hack squat, chest-supported row, and cable systems replace most free-weight and bodyweight work',
+      'Progressive overload: add 5 lbs to compound movements every 2–3 weeks when all sets complete cleanly with good form',
+      'Wednesday is dedicated cardio and core — no weights',
+      'Deload every 6–8 weeks: same exercises, 50–60% weight, skip HIIT on Wednesday',
+      'Both weekend days are genuinely off — no training, no active recovery guilt'
+    ],
+    mon: {
+      label:'Lower Body — Strength', color:'#E8FF47', rest:'75–90 sec', time:'70 min',
+      ex:[
+        {n:'Hack Squat Machine',s:'4×8–10',note:"Don't pass 90° — knees track toes, controlled descent"},
+        {n:'Leg Press',s:'3×10',note:'Feet mid-high on platform, moderate depth — drives quads and glutes'},
+        {n:'Seated Leg Curl Machine',s:'3×12–15',note:'3-second eccentric on every rep'},
+        {n:'Cable Single-Leg Romanian Deadlift',s:'3×10/leg',note:'Cable keeps constant tension — more effective than dumbbell version'},
+        {n:'Seated Hip Abduction Machine',s:'3×15',note:'Hip stability — slow, controlled, pause at peak'},
+        {n:'Cable Hip Extension (standing)',s:'3×12/leg',note:'Replaces bird dogs — same glute activation with full cable resistance'},
+        {n:'Seated Calf Raise Machine',s:'3×20',note:'Full stretch at bottom, 1-sec pause at top'},
+      ],
+      core:[
+        {n:'Cable Crunches',r:'3×15',note:'Rope at high cable — hinge at hips, crunch down'},
+        {n:'Ab Crunch Machine',r:'3×15',note:'Controlled resistance — replaces floor crunches'},
+      ],
+      cardio:{type:'MISS',dur:'20–25 min',hr:'65–70%',note:'Cycling or incline walk after weights. Optional but recommended.'}
+    },
+    tue: {
+      label:'Upper Body — Push', color:'#FF6B35', rest:'75–90 sec', time:'65 min',
+      ex:[
+        {n:'Cable Chest Press',s:'3×10',note:'Free arc — shoulder finds natural path, controlled eccentric'},
+        {n:'Incline Dumbbell Press',s:'3×10',note:'Elbows at 45°, full stretch at bottom'},
+        {n:'Cable Lateral Raises',s:'3×15',note:'Slight forward lean, lead with elbow'},
+        {n:'Seated Dumbbell Shoulder Press',s:'3×10–12',note:'Natural arc — stop just before full lockout'},
+        {n:'Cable Tricep Pushdowns',s:'3×12–15',note:'Elbows pinned to sides throughout'},
+        {n:'Overhead Cable Tricep Extension',s:'3×12',note:'Constant tension — cable not dumbbell'},
+      ],
+      core:[
+        {n:"Captain's Chair Leg Raises",r:'3×12',note:'Equipment-based — slow controlled descent'},
+        {n:'Cable Pallof Press',r:'3×12/side',note:'Anti-rotation — press out, resist the cable pull'},
+      ],
+      cardio:{type:'LISS',dur:'20 min',hr:'50–60%',note:'Incline walk or bike after weights.'}
+    },
+    wed: {
+      label:'Cardio + Core', color:'#FF3D6B', time:'55 min',
+      hiit:{dur:'25–30 min',note:'Assault Bike, Concept2 Rower, or Treadmill Sprints.\n30 sec max effort / 30 sec rest × 25–30 rounds.\nTrue max effort each work interval.'},
+      core:[
+        {n:'Ab Crunch Machine',r:'4×15',note:''},
+        {n:'Cable Crunches',r:'4×15',note:'Rope at high cable — hinge, don\'t pull'},
+        {n:'Hanging Leg Raises',r:'4×12',note:'Pull-up bar — no kipping'},
+        {n:'Torso Rotation Machine',r:'4×15/side',note:'Obliques — controlled, no jerking'},
+      ]
+    },
+    thu: {
+      label:'Lower Body — Posterior Chain', color:'#C084FC', rest:'75–90 sec', time:'70 min',
+      ex:[
+        {n:'Hip Thrust (barbell or plate-loaded)',s:'4×12',note:'Primary glute driver — load this progressively every session'},
+        {n:'Lying Leg Curl Machine',s:'3×12',note:'Different hip angle than seated — targets hamstrings through full ROM'},
+        {n:'Seated Leg Curl Machine',s:'3×12',note:'3-second eccentric — slow produces more stimulus'},
+        {n:'Cable Hip Extension (standing)',s:'3×12/leg',note:'Drive leg straight back — glute max isolation'},
+        {n:'Seated Hip Abduction Machine',s:'3×15',note:'Glute medius — outer hip'},
+        {n:'Back Extension Machine',s:'3×12',note:'Replaces bird dogs — erectors and glutes loaded on machine'},
+        {n:'Standing Calf Raise Machine',s:'3×20',note:'Full depth every rep, pause at top'},
+      ],
+      core:[
+        {n:'Hanging Leg Raises',r:'3×12',note:'Pull-up bar — no kipping or swinging'},
+        {n:'Ab Crunch Machine',r:'3×15',note:''},
+      ],
+      cardio:{type:'MISS',dur:'20 min',hr:'65–70%',note:'Rowing machine preferred — minimal additional leg stress.'}
+    },
+    fri: {
+      label:'Upper Body — Pull', color:'#FFB800', rest:'75–90 sec', time:'65 min',
+      ex:[
+        {n:'Chest Supported Row Machine',s:'3×10–12',note:'Takes lower back out completely — pure mid-back focus'},
+        {n:'Lat Pulldown — Wide Grip',s:'3×10',note:'Pull to upper chest, full stretch at top'},
+        {n:'Lat Pulldown — Neutral Grip',s:'3×10',note:'Elbows drive to hips for lat thickness'},
+        {n:'Cable Face Pulls',s:'3×15',note:'Never skip — rear delts and shoulder health long-term'},
+        {n:'Bicep Curl Machine',s:'3×10–12',note:'Constant tension — replaces incline DB curls'},
+        {n:'Cable Bicep Curls',s:'3×12–15',note:'Constant cable tension through full ROM'},
+        {n:'Rope Hammer Curls (cable)',s:'3×12',note:'Low cable, rope attachment — brachialis and forearms'},
+      ],
+      core:[
+        {n:'Cable Woodchoppers',r:'3×12/side',note:'Obliques and rotational core'},
+        {n:'Cable Pallof Press',r:'3×12/side',note:'Anti-rotation — best core cable exercise'},
+      ],
+      cardio:{type:'LISS',dur:'20 min',hr:'50–60%',note:'End the week easy — bike or elliptical.'}
+    }
+  },
+
+  nida: {
+    name: 'Nida',
+    color: '#F472B6',
+    focus: 'Strength · Tone · Fat Loss',
+    schedNote: 'Glute and posterior chain emphasis. Machine and cable focused.',
+    sched: [
+      {day:'MON',label:'Lower Body — Glutes & Quads',time:'70 min',color:'#E8FF47'},
+      {day:'TUE',label:'Upper Body — Push',time:'60 min',color:'#FF6B35'},
+      {day:'WED',label:'Cardio + Core',time:'50 min',color:'#FF3D6B'},
+      {day:'THU',label:'Lower Body — Hamstrings & Glutes',time:'70 min',color:'#C084FC'},
+      {day:'FRI',label:'Upper Body — Pull',time:'65 min',color:'#FFB800'},
+      {day:'SAT',label:'Off',time:'—',color:'#333'},
+      {day:'SUN',label:'Off',time:'—',color:'#333'},
+    ],
+    overview_notes: [
+      'Two dedicated lower body sessions per week with glute and hamstring emphasis — the main driver of physique change for this goal set',
+      'Machine and cable focused — leg press, hip thrust, cable kickbacks, and lat pulldowns replace bodyweight and band work',
+      'Progressive overload applies to Nida\'s plan identically — add small increments every 2–3 weeks when all sets are clean',
+      'Wednesday is dedicated cardio and core — no weights, choose HIIT or MISS based on energy levels',
+      'Deload every 6–8 weeks: same exercises, 50–60% weight, skip HIIT on Wednesday'
+    ],
+    mon: {
+      label:'Lower Body — Glutes & Quads', color:'#E8FF47', rest:'75–90 sec', time:'70 min',
+      ex:[
+        {n:'Leg Press (Glute Position)',s:'4×12',note:'Feet placed high on platform — shifts emphasis from quads to glutes'},
+        {n:'Hip Thrust (machine or plate-loaded)',s:'4×12',note:'Primary glute driver — full squeeze at top, controlled descent'},
+        {n:'Seated Leg Curl Machine',s:'3×12–15',note:'Hamstring isolation — 3-sec eccentric'},
+        {n:'Seated Hip Abduction Machine',s:'3×15',note:'Outer glute and hip stability — slow and deliberate'},
+        {n:'Cable Hip Kickback',s:'3×12/leg',note:'Drive leg straight back — glute max isolation from cable'},
+        {n:'Hack Squat Machine',s:'3×12',note:'Controlled depth — quad and glute combination'},
+        {n:'Seated Calf Raise Machine',s:'3×20',note:'Full range, 1-sec pause at top'},
+      ],
+      core:[
+        {n:'Ab Crunch Machine',r:'3×15',note:''},
+        {n:'Cable Crunches',r:'3×15',note:'Hinge at hips, crunch down with rope attachment'},
+      ],
+      cardio:{type:'MISS',dur:'20–25 min',hr:'65–70%',note:'Cycling or stair climber after weights.'}
+    },
+    tue: {
+      label:'Upper Body — Push', color:'#FF6B35', rest:'75–90 sec', time:'60 min',
+      ex:[
+        {n:'Cable Chest Press',s:'3×10',note:'Free arc — natural shoulder path, controlled eccentric'},
+        {n:'Incline Dumbbell Press',s:'3×10',note:'Upper chest focus, elbows at 45°'},
+        {n:'Cable Lateral Raises',s:'3×15',note:'Shoulder width — slight forward lean, lead with elbow'},
+        {n:'Seated Dumbbell Shoulder Press',s:'3×10',note:'Natural shoulder arc — stop before full lockout'},
+        {n:'Cable Tricep Pushdowns',s:'3×12–15',note:'Elbows pinned throughout'},
+        {n:'Overhead Cable Tricep Extension',s:'3×12',note:'Long head — cable keeps tension at full stretch'},
+      ],
+      core:[
+        {n:"Captain's Chair Leg Raises",r:'3×12',note:'Equipment-based — control the descent'},
+        {n:'Cable Pallof Press',r:'3×12/side',note:'Arms press straight out — resist the cable'},
+      ],
+      cardio:{type:'LISS',dur:'20 min',hr:'50–60%',note:'Incline walk or bike — active recovery pace.'}
+    },
+    wed: {
+      label:'Cardio + Core', color:'#FF3D6B', time:'50 min',
+      hiit:{dur:'25–30 min',note:'Option A: HIIT — 30 sec on / 30 sec off on Assault Bike or Rower.\nOption B: MISS — 30 min stair climber or cycling at 65–70% HR.\n\nChoose based on how your legs feel from Monday.'},
+      core:[
+        {n:'Ab Crunch Machine',r:'4×15',note:''},
+        {n:'Cable Crunches',r:'4×15',note:''},
+        {n:"Captain's Chair Leg Raises",r:'4×10',note:'Controlled — no swinging'},
+        {n:'Torso Rotation Machine',r:'4×12/side',note:'Obliques — slow and controlled'},
+      ]
+    },
+    thu: {
+      label:'Lower Body — Hamstrings & Glutes', color:'#C084FC', rest:'75–90 sec', time:'70 min',
+      ex:[
+        {n:'Hip Thrust (heavy)',s:'4×12',note:'Load heavier than Monday — this is your strongest lower body session'},
+        {n:'Lying Leg Curl Machine',s:'3×12',note:'Full ROM — different hip angle hits hamstrings differently than seated'},
+        {n:'Dumbbell Romanian Deadlift',s:'3×12',note:'Hip hinge — deep hamstring stretch at bottom, chest tall'},
+        {n:'Sumo Stance Leg Press',s:'3×12',note:'Wide stance, toes angled out — targets inner thigh and glutes'},
+        {n:'Cable Hip Extension (standing)',s:'3×12/leg',note:'Glute max isolation from cable — full range'},
+        {n:'Back Extension Machine',s:'3×12',note:'Posterior chain — erectors, glutes, hamstrings in one movement'},
+        {n:'Standing Calf Raise Machine',s:'3×20',note:'Full depth every rep'},
+      ],
+      core:[
+        {n:'Hanging Leg Raises',r:'3×10',note:'No kipping — controlled'},
+        {n:'Ab Crunch Machine',r:'3×15',note:''},
+      ],
+      cardio:{type:'MISS',dur:'20 min',hr:'65–70%',note:'Rowing or light cycling — minimal extra leg load.'}
+    },
+    fri: {
+      label:'Upper Body — Pull', color:'#FFB800', rest:'75–90 sec', time:'65 min',
+      ex:[
+        {n:'Seated Cable Row',s:'3×10–12',note:'Full scapular retraction at peak — squeeze mid-back hard'},
+        {n:'Lat Pulldown — Wide Grip',s:'3×10',note:'Pull to upper chest, full stretch at top'},
+        {n:'Lat Pulldown — Neutral Grip',s:'3×10',note:'Elbows drive to hips for lat thickness'},
+        {n:'Cable Face Pulls',s:'3×15',note:'Never skip — rear delts and posture'},
+        {n:'Incline Dumbbell Bicep Curls',s:'3×10–12',note:'Full stretch at bottom — strongest growth signal'},
+        {n:'Cable Bicep Curls',s:'3×12–15',note:'Constant cable tension throughout ROM'},
+        {n:'Rope Hammer Curls (cable)',s:'3×12',note:'Low cable, rope attachment — brachialis definition'},
+      ],
+      core:[
+        {n:'Cable Woodchoppers',r:'3×12/side',note:'Obliques and rotational core'},
+        {n:'Cable Pallof Press',r:'3×12/side',note:'Anti-rotation — arms press out, resist the pull'},
+      ],
+      cardio:{type:'LISS',dur:'20 min',hr:'50–60%',note:'End the week easy — elliptical or incline walk.'}
+    }
+  }
+};
+
+let person = 'reshad';
+let day = 'overview';
+
+function hex(h, a) { return h + Math.round(a * 255).toString(16).padStart(2, '0'); }
+
+function setPerson(p) {
+  person = p;
+  const pd = P[p];
+  document.documentElement.style.setProperty('--acc', pd.color);
+  document.getElementById('pbtn-reshad').classList.toggle('active', p === 'reshad');
+  document.getElementById('pbtn-nida').classList.toggle('active', p === 'nida');
+  renderTabs();
+  renderContent();
+}
+
+function setDay(d) {
+  day = d;
+  renderTabs();
+  renderContent();
+}
+
+function getDayColor() {
+  const pd = P[person];
+  if (day === 'overview') return pd.color;
+  const dayData = pd[day];
+  return dayData ? (dayData.color || pd.color) : pd.color;
+}
+
+function renderTabs() {
+  const dc = getDayColor();
+  document.getElementById('tabs').innerHTML = DAYS_ORDER.map(d => {
+    const isActive = d === day;
+    return `<button class="tab${isActive ? ' active' : ''}" 
+      style="${isActive ? `--day-color:${dc};color:${dc};border-bottom-color:${dc}` : ''}"
+      onclick="setDay('${d}')">${DAY_LABELS[d]}</button>`;
+  }).join('');
+}
+
+function renderContent() {
+  const pd = P[person];
+  const dc = getDayColor();
+  let html = '';
+
+  if (day === 'overview') {
+    html = `
+      <div class="overview-banner" style="background:${hex(dc, 0.06)};border:1px solid ${hex(dc, 0.18)}">
+        <div>
+          <div class="ov-name" style="color:${dc}">${pd.name}</div>
+          <div class="ov-focus" style="color:${hex(dc, 0.7)}">${pd.focus}</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-title" style="color:${dc}">
+          <span class="itbar" style="background:${dc}"></span>Program Notes
+        </div>
+        <ul>${pd.overview_notes.map(n => `<li>${n}</li>`).join('')}</ul>
+      </div>
+      <div class="info-card">
+        <div class="info-title" style="color:${dc}">
+          <span class="itbar" style="background:${dc}"></span>Weekly Schedule
+        </div>
+        ${pd.sched.map(s => `
+          <div class="sched-row">
+            <div class="sched-day">${s.day}</div>
+            <div class="sched-name" style="color:${s.color === '#333' ? '#333' : '#d0d0d0'}">${s.label}</div>
+            <div class="sched-time" style="color:${s.color === '#333' ? '#2a2a2a' : s.color}">${s.time}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="info-card">
+        <div class="info-title" style="color:${dc}">
+          <span class="itbar" style="background:${dc}"></span>Progression Rule
+        </div>
+        <p>When you complete all sets and reps cleanly — <strong>add weight at your next session</strong>. Compound movements (hack squat, leg press, hip thrust): +5 lbs. Isolation work (curls, raises, extensions): +2.5 lbs. Track every weight you use. This is what separates people who keep changing from people who plateau.</p>
+        <p style="margin-top:8px"><strong>Deload week:</strong> Every 6–8 weeks, run all the same exercises at 50–60% weight. Same reps, longer rest. No HIIT on Wednesday. You'll exit the week feeling fresh and typically hit new weight records the week after.</p>
+      </div>
+    `;
+  } else if (day === 'wed') {
+    const wd = pd.wed;
+    html = `
+      <div class="day-hdr">
+        <div class="day-dot" style="background:${dc}"></div>
+        <div class="day-title-block">
+          <div class="day-name-label">Wednesday</div>
+          <div class="day-focus-label">${wd.label}</div>
+        </div>
+        <div class="day-dur" style="color:${dc}">${wd.time}</div>
+      </div>
+      <div class="hiit-block" style="background:${hex(dc, 0.06)};border:1px solid ${hex(dc, 0.2)};border-radius:9px;margin-bottom:12px">
+        <div class="hiit-title" style="color:${dc}">CARDIO</div>
+        <div style="font-family:var(--mono);font-size:9px;color:${dc};letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">${wd.hiit.dur}</div>
+        <div class="hiit-note">${wd.hiit.note}</div>
+      </div>
+      <div class="sec-lbl">
+        <div class="slbar" style="background:${dc}"></div>
+        <div class="sltext">Core Circuit · 4 rounds · 30 sec rest between rounds</div>
+      </div>
+      <div class="item-list">
+        ${wd.core.map(c => `
+          <div class="item-row">
+            <div><div class="item-name">${c.n}</div>${c.note ? `<div class="item-note">${c.note}</div>` : ''}</div>
+            <div class="item-reps" style="color:${dc}">${c.r}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    const dd = pd[day];
+    if (!dd) { html = '<p style="color:#555;padding:20px 0">Rest day.</p>'; }
+    else {
+      html = `
+        <div class="day-hdr">
+          <div class="day-dot" style="background:${dc}"></div>
+          <div class="day-title-block">
+            <div class="day-name-label">${{mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday'}[day]}</div>
+            <div class="day-focus-label">${dd.label}</div>
+          </div>
+          <div class="day-dur" style="color:${dc}">${dd.time}</div>
+        </div>
+        ${dd.rest ? `<div class="rest-tag" style="background:${hex(dc,0.07)};border:1px solid ${hex(dc,0.2)}"><span style="color:${dc}">Rest: ${dd.rest} between sets</span></div>` : ''}
+      `;
+
+      if (dd.ex && dd.ex.length) {
+        html += `
+          <div class="sec-lbl">
+            <div class="slbar" style="background:${dc}"></div>
+            <div class="sltext">Weights · ${dd.ex.length} exercises</div>
+          </div>
+          <div class="ex-tbl">
+            ${dd.ex.map((ex, i) => `
+              <div class="ex-row">
+                <div class="ex-n" style="color:${dc}">${String(i+1).padStart(2,'0')}</div>
+                <div class="ex-info">
+                  <div class="ex-name">${ex.n}</div>
+                  ${ex.note ? `<div class="ex-note">${ex.note}</div>` : ''}
+                </div>
+                <div class="ex-sets" style="color:${dc};background:${hex(dc,0.08)}">${ex.s}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      if (dd.core && dd.core.length) {
+        html += `
+          <div class="sec-lbl">
+            <div class="slbar" style="background:${dc}"></div>
+            <div class="sltext">Core · 3 rounds</div>
+          </div>
+          <div class="item-list">
+            ${dd.core.map(c => `
+              <div class="item-row">
+                <div><div class="item-name">${c.n}</div>${c.note ? `<div class="item-note">${c.note}</div>` : ''}</div>
+                <div class="item-reps" style="color:${dc}">${c.r}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      if (dd.cardio) {
+        html += `
+          <div class="cardio-card" style="background:${hex(dc,0.05)};border:1px solid ${hex(dc,0.18)}">
+            <div class="cardio-label" style="color:${dc}">
+              <span class="clbar" style="background:${dc}"></span>${dd.cardio.type}
+            </div>
+            <div class="cardio-stats">
+              <div><div class="cstat-lbl">Duration</div><div class="cstat-val" style="color:${dc}">${dd.cardio.dur}</div></div>
+              <div><div class="cstat-lbl">Heart Rate</div><div class="cstat-val" style="color:#555">${dd.cardio.hr}</div></div>
+            </div>
+            <div class="cardio-note">${dd.cardio.note}</div>
+          </div>
+        `;
+      }
+    }
+  }
+
+  document.getElementById('content').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+renderTabs();
+renderContent();
+</script>
+</body>
+</html>
