@@ -129,7 +129,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 </div>
 
 <div class="person-switch">
-  <button class="person-btn active" id="pbtn-reshad" onclick="setPerson('reshad')">RESHAD</button>
+  <button class="person-btn" id="pbtn-reshad" onclick="setPerson('reshad')">RESHAD</button>
   <button class="person-btn" id="pbtn-nida" onclick="setPerson('nida')">NIDA</button>
 </div>
 
@@ -342,7 +342,9 @@ const P = {
   }
 };
 
-let person = 'reshad';
+const urlParams = new URLSearchParams(window.location.search);
+const requestedPerson = urlParams.get('person');
+let person = (requestedPerson === 'nida') ? 'nida' : 'reshad';
 let day = 'overview';
 
 function hex(h, a) { return h + Math.round(a * 255).toString(16).padStart(2, '0'); }
@@ -523,6 +525,8 @@ function renderContent() {
   window.scrollTo(0, 0);
 }
 
+document.getElementById('pbtn-reshad').classList.toggle('active', person === 'reshad');
+document.getElementById('pbtn-nida').classList.toggle('active', person === 'nida');
 renderTabs();
 renderContent();
 </script>
